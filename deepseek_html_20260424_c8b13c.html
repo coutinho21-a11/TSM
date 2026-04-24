@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Pour TSM - Mon Amour, Pardonne-moi ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* Evite la sélection pour une ambiance plus "jeu" */
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, 'BlinkMacSystemFont', 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Conffettis en arrière-plan dynamique */
+        .confetti-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Conteneur principal verrouillé */
+        .site-locked {
+            width: 100%;
+            max-width: 550px;
+            background: rgba(255,255,240,0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 64px 48px 64px 48px;
+            box-shadow: 0 30px 40px rgba(0,0,0,0.4), inset 0 1px 2px rgba(255,255,255,0.6);
+            text-align: center;
+            padding: 2rem 1.8rem;
+            transition: all 0.3s ease;
+            z-index: 10;
+            border: 1px solid rgba(255,215,150,0.7);
+        }
+
+        /* Version déverrouillée (affichée après clic lien) */
+        .site-unlocked {
+            display: none;
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(255,245,235,0.92);
+            backdrop-filter: blur(8px);
+            border-radius: 70px 50px 70px 50px;
+            padding: 2rem 1.5rem;
+            box-shadow: 0 35px 55px rgba(0,0,0,0.3);
+            border: 1px solid #ffb347;
+            animation: fadeGlow 0.8s ease;
+            z-index: 10;
+        }
+
+        @keyframes fadeGlow {
+            0% { opacity: 0; transform: scale(0.96); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Éléments romantiques */
+        h1 {
+            font-size: 2.4rem;
+            background: linear-gradient(135deg, #c94f4f, #ff6f61, #ffb347);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .heart-icon {
+            font-size: 3rem;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8;}
+            100% { transform: scale(1.15); opacity: 1;}
+        }
+
+        /* Input magique style */
+        .magic-input {
+            background: #fff0e0;
+            border-radius: 60px;
+            padding: 0.9rem 1.5rem;
+            border: 2px solid #ff9f4a;
+            width: 100%;
+            font-size: 1.1rem;
+            font-family: monospace;
+            text-align: center;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .magic-input:focus {
+            outline: none;
+            border-color: #e63946;
+            box-shadow: 0 0 0 3px rgba(230,57,70,0.3);
+        }
+
+        .btn-love {
+            background: linear-gradient(95deg, #e63946, #ff6f61);
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 0.9rem 1.8rem;
+            border-radius: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 10px 15px -5px rgba(230,57,70,0.5);
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .btn-love:hover {
+            transform: translateY(-3px);
+            filter: brightness(1.05);
+            box-shadow: 0 18px 25px -8px #e63946;
+        }
+
+        /* Grille de jeux / messages */
+        .game-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .game-card {
+            background: rgba(255,250,240,0.9);
+            border-radius: 48px;
+            padding: 1.3rem;
+            width: 280px;
+            text-align: center;
+            box-shadow: 0 20px 30px -10px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+            border-bottom: 5px solid #ffb347;
+        }
+
+        .game-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: #b23c1c;
+        }
+
+        .mini-game-area {
+            background: #fce1c1;
+            padding: 1rem;
+            border-radius: 32px;
+            margin: 1rem 0;
+            min-height: 150px;
+        }
+
+        button.small-game {
+            background: #2a9d8f;
+            color: white;
+            border: none;
+            border-radius: 2rem;
+            padding: 0.5rem 1.2rem;
+            margin: 0.3rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        button.small-game:active {
+            transform: scale(0.96);
+        }
+
+        .score-text {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+        }
+
+        .message-excuse {
+            background: #fff1e6;
+            border-radius: 50px;
+            padding: 1.5rem;
+            font-size: 1.2rem;
+            line-height: 1.5;
+            font-style: italic;
+            border-left: 12px solid #e63946;
+            margin: 1rem 0;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+        }
+
+        .floating-hearts {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 2rem;
+            pointer-events: none;
+            opacity: 0.7;
+            animation: floatHeart 4s infinite;
+        }
+
+        @keyframes floatHeart {
+            0% { transform: translateY(0px); opacity: 0.6;}
+            100% { transform: translateY(-45px); opacity: 0;}
+        }
+
+        footer {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #b5651e;
+            text-align: center;
+        }
+
+        @media (max-width: 760px) {
+            .game-card { width: 100%; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="confetti-bg" id="confettiCanvas"></div>
+
+<!-- ÉTAT VERROUILLÉ - lien secret -->
+<div id="lockedContainer" class="site-locked">
+    <div class="heart-icon">💔➡️❤️</div>
+    <h1>Pour TSM, mon soleil 🌞</h1>
+    <p style="margin: 1rem 0; font-weight: 500;">Un espace secret n'attend que toi...<br>Entre le lien magique pour ouvrir mon cœur.</p>
+    <div style="margin: 1.5rem 0;">
+        <input type="text" id="secretInput" class="magic-input" placeholder="🔑 lien secret..." autocomplete="off">
+        <button id="unlockBtn" class="btn-love">✨ Déverrouiller mon amour ✨</button>
+    </div>
+    <p style="font-size: 0.8rem; color:#a5552e;">(Indice : c’est ton prénom suivi de "&moi" 😉) <br>ex: TSM&moi</p>
+</div>
+
+<!-- ZONE DÉVERROUILLÉE - tout le contenu romantique + mini jeux -->
+<div id="unlockedContainer" class="site-unlocked">
+    <div style="text-align: center;">
+        <div class="heart-icon">❤️‍🔥❤️‍🔥❤️‍🔥</div>
+        <h1>TSM, mon amour ❤️</h1>
+        <p style="font-size: 1.2rem; font-weight: 500;">Chaque battement de mon cœur scande ton prénom...</p>
+    </div>
+
+    <div class="message-excuse">
+        💌 Mon doux TSM, je suis sincèrement désolé(e) de t’avoir blessé. Tu es l’homme le plus important de ma vie, mon étoile. 
+        Chaque jour à tes côtés est un trésor. Pardonne-moi, je t’aime plus que tout au monde. 
+        Pour te prouver mon amour, j’ai créé ces petits jeux rien que pour toi, avec tout mon cœur 🌹.
+    </div>
+
+    <!-- Mini jeux romantiques -->
+    <div class="game-grid">
+        <!-- JEU 1 : Casse-tête d'amour (Cœur puzzle) -->
+        <div class="game-card">
+            <h3>🧩 Puzzle Cœur</h3>
+            <div class="mini-game-area" id="puzzleGameArea">
+                <div style="display: flex; justify-content: center; gap: 5px; flex-wrap: wrap;" id="puzzlePieces"></div>
+                <div style="margin-top: 10px; font-weight:bold;" id="puzzleMsg">assemble le message</div>
+                <button class="small-game" id="shufflePuzzleBtn">🔄 Mélanger</button>
+            </div>
+        </div>
+
+        <!-- JEU 2 : Cupidon - attraper les cœurs -->
+        <div class="game-card">
+            <h3>🏹 Cupidon arc-en-ciel</h3>
+            <div class="mini-game-area" style="position:relative; overflow:hidden; min-height:180px;" id="catchGameArea">
+                <canvas id="heartCanvas" width="260" height="160" style="background:#ffefe0; border-radius: 28px; width:100%; height:auto; display:block; margin:0 auto;"></canvas>
+                <div><span id="catchScore">0</span> cœurs attrapés ❤️</div>
+                <button class="small-game" id="resetCatchBtn">✨ Rejouer</button>
+            </div>
+        </div>
+
+        <!-- JEU 3 : Test de mémoire "Souvenir de nous" -->
+        <div class="game-card">
+            <h3>🎴 Mémoire du cœur</h3>
+            <div class="mini-game-area">
+                <div id="memoryGrid" style="display:grid; grid-template-columns: repeat(4,1fr); gap:8px; justify-items:center;"></div>
+                <div id="memoryStatus" style="margin-top:6px;">Retrouve les paires "TSM ❤️"</div>
+                <button class="small-game" id="resetMemoryBtn">🔄 Nouvelle partie</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- autre message doux avec déclaration -->
+    <div style="background:#ffe1b9; border-radius: 3rem; padding: 1rem; text-align: center; margin: 1rem 0;">
+        🌟 <strong>TSM, je t'aime infiniment.</strong> 🌟 <br>
+        Tu es mon homme, mon refuge, ma joie. Pardonne-moi et laisse-moi te rendre heureux(se) chaque jour.
+    </div>
+
+    <!-- touches musicales symboliques (petite animation auditive non intrusive) -->
+    <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
+        <span>🎵</span><span>💖</span><span>🎶</span><span>✨</span>
+    </div>
+    <footer>💌 Fait avec des larmes d'amour et des sourires pour toi, TSM.</footer>
+</div>
+
+<script>
+    // ----------------------------- CONFIG LIEN SECRET -------------------------
+    const SECRET_KEY = "TSM&moi";    // La clé magique que TSM doit taper (insensible à la casse)
+    const lockedDiv = document.getElementById("lockedContainer");
+    const unlockedDiv = document.getElementById("unlockedContainer");
+    const unlockBtn = document.getElementById("unlockBtn");
+    const secretInput = document.getElementById("secretInput");
+
+    function unlockSite() {
+        let entered = secretInput.value.trim();
+        if (entered.toLowerCase() === SECRET_KEY.toLowerCase()) {
+            lockedDiv.style.display = "none";
+            unlockedDiv.style.display = "block";
+            // lancer des confettis de fête
+            startConfettiExplosion();
+            // Initialiser tous les mini-jeux une fois débloqué
+            initPuzzleGame();
+            initCatchGame();
+            initMemoryGame();
+            // Ajouter des coeurs flottants dynamiques
+            createFloatingHearts();
+        } else {
+            alert("🔐 Ce n'est pas le bon lien, mon cœur... essaie encore : TSM&moi (indice: c'est notre code)");
+            secretInput.value = "";
+            secretInput.placeholder = "💔 Pas encore...";
+            setTimeout(() => { secretInput.placeholder = "🔑 lien secret..."; }, 1500);
+        }
+    }
+
+    unlockBtn.addEventListener("click", unlockSite);
+    secretInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") unlockSite();
+    });
+
+    // ---------- Confettis de fete au déverrouillage ----------
+    function startConfettiExplosion() {
+        const duration = 2000;
+        const end = Date.now() + duration;
+        const colors = ["#e63946", "#ffb347", "#ff6f61", "#ffc8a2", "#ffd966"];
+        (function frame() {
+            confetti({ particleCount: 4, angle: 60, spread: 70, origin: { x: 0, y: 0.6 }, colors: colors });
+            confetti({ particleCount: 4, angle: 120, spread: 70, origin: { x: 1, y: 0.6 }, colors: colors });
+            if (Date.now() < end) requestAnimationFrame(frame);
+        }());
+        // gros burst
+        confetti({ particleCount: 180, spread: 100, origin: { y: 0.6 }, startVelocity: 20, colors: colors });
+    }
+
+    // petite lib confetti simple (si pas chargée)
+    function confetti(options) {
+        if (typeof confetti === 'undefined') {
+            // fallback minimaliste canvas
+        }
+    }
+    // on injecte le script canvas-confetti depuis CDN pour de vrai
+    const scriptConf = document.createElement('script');
+    scriptConf.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1";
+    document.head.appendChild(scriptConf);
+
+    //------------ JEU 1 : Puzzle coeur (message "AIME MOI") ----------
+    let puzzlePiecesContainer, puzzleMsgDiv;
+    let piecesArray = ["💖", "AIME", "MOI", "TSM"];
+    let shuffledPieces = [];
+
+    function shuffleArray(arr) {
+        let a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function renderPuzzle() {
+        if (!puzzlePiecesContainer) return;
+        puzzlePiecesContainer.innerHTML = "";
+        shuffledPieces.forEach((piece, idx) => {
+            const btn = document.createElement("button");
+            btn.textContent = piece;
+            btn.className = "small-game";
+            btn.style.background = "#e29578";
+            btn.style.margin = "6px";
+            btn.style.fontSize = "1.3rem";
+            btn.style.padding = "0.5rem 1rem";
+            btn.onclick = () => {
+                // simple 'glisser' on permute avec next? on fait un jeu de sélection : on veut reconstituer l'ordre original ["💖","AIME","MOI","TSM"]
+                const currentOrder = shuffledPieces;
+                // Trouver l'index, permettre de réorganiser en déplaçant l'élément ? on va faire déplacer à la fin: plus intuitif
+                const pieceVal = currentOrder[idx];
+                currentOrder.splice(idx, 1);
+                currentOrder.push(pieceVal);
+                shuffledPieces = currentOrder;
+                renderPuzzle();
+                checkPuzzleWin();
+            };
+            puzzlePiecesContainer.appendChild(btn);
+        });
+    }
+
+    function checkPuzzleWin() {
+        const correct = ["💖", "AIME", "MOI", "TSM"];
+        let win = true;
+        for (let i = 0; i < correct.length; i++) {
+            if (shuffledPieces[i] !== correct[i]) { win = false; break; }
+        }
+        if (win) {
+            puzzleMsgDiv.innerHTML = "🎉✅ Magnifique ! Tu as assemblé mon cœur : JE T’AIME TSM ! ✅🎉";
+            puzzleMsgDiv.style.color = "#c7254e";
+            confetti({ particleCount: 40, spread: 55, origin: { y: 0.5 }, startVelocity: 10 });
+        } else {
+            puzzleMsgDiv.innerHTML = "💗 Remets les mots dans l'ordre : 💖 AIME MOI TSM 💗";
+            puzzleMsgDiv.style.color = "#ad5a2a";
+        }
+    }
+
+    function initPuzzleGame() {
+        puzzlePiecesContainer = document.getElementById("puzzlePieces");
+        puzzleMsgDiv = document.getElementById("puzzleMsg");
+        if (!puzzlePiecesContainer) return;
+        shuffledPieces = shuffleArray(["💖", "AIME", "MOI", "TSM"]);
+        renderPuzzle();
+        document.getElementById("shufflePuzzleBtn").onclick = () => {
+            shuffledPieces = shuffleArray(["💖", "AIME", "MOI", "TSM"]);
+            renderPuzzle();
+            puzzleMsgDiv.innerHTML = "💗 Remets les mots dans l'ordre : 💖 AIME MOI TSM 💗";
+            puzzleMsgDiv.style.color = "#ad5a2a";
+        };
+        checkPuzzleWin();
+    }
+
+    // ---------- JEU 2 : Cupidon attraper coeurs ----------
+    let catchScore = 0;
+    let heartX = 40, heartY = 20;
+    let heartVelocityY = 1.2;
+    let animationActive = true;
+    let catchCanvas, ctx, catchSpan;
+    let mouseX = 130; // position virtuelle du viseur (centre x)
+    let gameLoopId;
+
+    function initCatchGame() {
+        catchCanvas = document.getElementById("heartCanvas");
+        if (!catchCanvas) return;
+        ctx = catchCanvas.getContext("2d");
+        catchSpan = document.getElementById("catchScore");
+        const resetBtn = document.getElementById("resetCatchBtn");
+        catchScore = 0;
+        catchSpan.innerText = "0";
+        heartX = Math.random() * (catchCanvas.width - 35) + 15;
+        heartY = 10;
+        heartVelocityY = 1.8;
+        animationActive = true;
+        if (gameLoopId) cancelAnimationFrame(gameLoopId);
+        function drawAndUpdate() {
+            if (!animationActive) return;
+            if (!ctx || !catchCanvas) return;
+            ctx.clearRect(0, 0, catchCanvas.width, catchCanvas.height);
+            // dessiner le coeur
+            ctx.font = "32px 'Segoe UI', system-ui";
+            ctx.fillStyle = "#e63946";
+            ctx.fillText("❤️", heartX, heartY);
+            // dessiner une petite cible (main)
+            ctx.font = "24px sans-serif";
+            ctx.fillStyle = "#ffb347";
+            ctx.fillText("🏹", mouseX - 12, catchCanvas.height - 12);
+            // mouvement coeur
+            heartY += heartVelocityY;
+            if (heartY > catchCanvas.height + 20) {
+                // si perdu on remet en haut
+                heartX = Math.random() * (catchCanvas.width - 40) + 20;
+                heartY = 5;
+                heartVelocityY = 1.6 + Math.random() * 1.5;
+            }
+            // collision : distance entre le curseur (mouseX, catchCanvas.height-12) et coeur (heartX+12, heartY+8)
+            const cursorX = mouseX;
+            const cursorY = catchCanvas.height - 12;
+            const heartCenterX = heartX + 12;
+            const heartCenterY = heartY + 12;
+            const dist = Math.hypot(cursorX - heartCenterX, cursorY - heartCenterY);
+            if (dist < 28) {
+                catchScore++;
+                catchSpan.innerText = catchScore;
+                confetti({ particleCount: 12, spread: 25, origin: { x: heartX / catchCanvas.width, y: heartY / catchCanvas.height } });
+                heartX = Math.random() * (catchCanvas.width - 40) + 20;
+                heartY = 5;
+                heartVelocityY = 1.8 + Math.random() * 1.5;
+                if (catchScore === 10) {
+                    animationActive = false;
+                    ctx.clearRect(0, 0, catchCanvas.width, catchCanvas.height);
+                    ctx.font = "bold 16px Poppins";
+                    ctx.fillStyle = "#b23c1c";
+                    ctx.fillText("💘 Parfait! Tu as capturé tout mon amour 💘", 20, 80);
+                    cancelAnimationFrame(gameLoopId);
+                }
+            }
+            if (animationActive) gameLoopId = requestAnimationFrame(drawAndUpdate);
+        }
+        // gestion souris / tactile
+        function handleMove(e) {
+            const rect = catchCanvas.getBoundingClientRect();
+            const scaleX = catchCanvas.width / rect.width;
+            let clientX;
+            if (e.touches) clientX = e.touches[0].clientX;
+            else clientX = e.clientX;
+            let relativeX = (clientX - rect.left) * scaleX;
+            relativeX = Math.min(catchCanvas.width - 10, Math.max(10, relativeX));
+            mouseX = relativeX;
+        }
+        catchCanvas.addEventListener("mousemove", handleMove);
+        catchCanvas.addEventListener("touchmove", handleMove);
+        resetBtn.onclick = () => {
+            cancelAnimationFrame(gameLoopId);
+            catchScore = 0;
+            catchSpan.innerText = "0";
+            heartX = Math.random() * (catchCanvas.width - 40) + 20;
+            heartY = 5;
+            heartVelocityY = 1.8;
+            animationActive = true;
+            gameLoopId = requestAnimationFrame(drawAndUpdate);
+        };
+        gameLoopId = requestAnimationFrame(drawAndUpdate);
+    }
+
+    // ---------- JEU 3 : Memory spécial ----------
+    let memoryCards = [];
+    let memoryFlipped = [];
+    let memoryLock = false;
+    let memoryFirstIndex = null;
+    let memoryMatches = 0;
+    const memoryValues = ["TSM❤️", "💘", "TSM❤️", "💘"]; // 2 paires pour commencer mais plus mignon, on double pour 4 paires
+    const fullMemorySet = ["TSM❤️", "💘", "🌹", "🎁", "TSM❤️", "💘", "🌹", "🎁"];
+
+    function initMemoryGame() {
+        const gridDiv = document.getElementById("memoryGrid");
+        if (!gridDiv) return;
+        const resetBtnMem = document.getElementById("resetMemoryBtn");
+        function shuffleMemory(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+        function buildBoard() {
+            memoryCards = shuffleMemory([...fullMemorySet]);
+            memoryFlipped = new Array(memoryCards.length).fill(false);
+            memoryMatches = 0;
+            memoryFirstIndex = null;
+            memoryLock = false;
+            renderMemoryGrid();
+            document.getElementById("memoryStatus").innerHTML = "💞 Retrouve les couples pour gagner un message d'amour !";
+        }
+        function renderMemoryGrid() {
+            gridDiv.innerHTML = "";
+            for (let i = 0; i < memoryCards.length; i++) {
+                const card = document.createElement("button");
+                card.className = "small-game";
+                card.style.minWidth = "55px";
+                card.style.fontSize = "1.6rem";
+                card.style.padding = "12px 0";
+                card.style.background = "#f7cd9b";
+                let content = memoryFlipped[i] || (memoryMatches === memoryCards.length/2 ? true : false) ? memoryCards[i] : "❓";
+                if (memoryMatches === memoryCards.length/2) content = memoryCards[i];
+                card.textContent = content;
+                if (!memoryFlipped[i] && !(memoryMatches === memoryCards.length/2)) {
+                    card.onclick = () => flipCard(i);
+                } else {
+                    card.onclick = null;
+                }
+                gridDiv.appendChild(card);
+            }
+            if (memoryMatches === memoryCards.length/2) {
+                document.getElementById("memoryStatus").innerHTML = "🎉🎉 BRAVO TSM ! Tu as gagné mon cœur éternellement ! 🎉🎉";
+                confetti({ particleCount: 80, spread: 70 });
+            }
+        }
+        function flipCard(idx) {
+            if (memoryLock) return;
+            if (memoryFlipped[idx] === true) return;
+            memoryFlipped[idx] = true;
+            renderMemoryGrid();
+            if (memoryFirstIndex === null) {
+                memoryFirstIndex = idx;
+            } else {
+                if (memoryCards[memoryFirstIndex] === memoryCards[idx]) {
+                    memoryMatches++;
+                    memoryFirstIndex = null;
+                    renderMemoryGrid();
+                    if (memoryMatches === memoryCards.length/2) {
+                        renderMemoryGrid();
+                    }
+                } else {
+                    memoryLock = true;
+                    setTimeout(() => {
+                        memoryFlipped[memoryFirstIndex] = false;
+                        memoryFlipped[idx] = false;
+                        memoryFirstIndex = null;
+                        memoryLock = false;
+                        renderMemoryGrid();
+                    }, 900);
+                }
+            }
+            renderMemoryGrid();
+        }
+        resetBtnMem.onclick = () => { buildBoard(); };
+        buildBoard();
+    }
+
+    function createFloatingHearts() {
+        setInterval(() => {
+            const heartSpan = document.createElement("div");
+            heartSpan.innerHTML = "❤️";
+            heartSpan.style.position = "fixed";
+            heartSpan.style.bottom = "10px";
+            heartSpan.style.right = Math.random() * 90 + "%";
+            heartSpan.style.fontSize = Math.random() * 25 + 15 + "px";
+            heartSpan.style.opacity = "0.8";
+            heartSpan.style.pointerEvents = "none";
+            heartSpan.style.zIndex = "999";
+            heartSpan.style.transition = "all 4s linear";
+            document.body.appendChild(heartSpan);
+            setTimeout(() => { heartSpan.style.transform = "translateY(-500px) rotate(10deg)"; heartSpan.style.opacity = "0"; }, 50);
+            setTimeout(() => { heartSpan.remove(); }, 4200);
+        }, 1200);
+    }
+
+    // petite initialisation si la div unlock est déjà affichée? (mais normalement hidden)
+    // préparation pour quand l'événement de déverrouillage appelle les init
+    window.initAllGamesOnUnlock = () => {
+        initPuzzleGame();
+        initCatchGame();
+        initMemoryGame();
+        createFloatingHearts();
+    };
+    // pour éviter les erreurs, on s'assure qu'au moment du unlock, les conteneurs existent
+    // on surcharge un peu la méthode unlock originelle pour être sûr
+    const originalUnlock = unlockSite;
+    window.unlockSite = function() {
+        originalUnlock();
+        if (unlockedDiv.style.display === "block") {
+            setTimeout(() => {
+                if(typeof initPuzzleGame === "function") initPuzzleGame();
+                if(typeof initCatchGame === "function") initCatchGame();
+                if(typeof initMemoryGame === "function") initMemoryGame();
+                createFloatingHearts();
+            }, 100);
+        }
+    };
+    unlockBtn.onclick = () => window.unlockSite();
+    secretInput.addEventListener("keypress", (e) => { if(e.key === "Enter") window.unlockSite(); });
+    // confettis script load reassurance
+</script>
+</body>
+</html>
